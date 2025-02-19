@@ -42,20 +42,22 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('admin.leger.jalanUtama.view.select') }}" class="nav-link {{ Request::is('leger') ? 'active' : '' }}">
+                            <a href="{{ route('admin.leger.jalanUtama.view.select') }}"
+                                class="nav-link {{ Request::is('leger') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Cetak Leger</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('admin.leger.jalanUtama.edit.select') }}" class="nav-link {{ Request::is('leger/edit') ? 'active' : '' }}">
+                            <a href="{{ route('admin.leger.jalanUtama.edit.select') }}"
+                                class="nav-link {{ Request::is('leger/edit') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Detail Leger</p>
                             </a>
                         </li>
                     </ul>
                 </li>
-                
+
 
                 <li class="nav-item has-treeview {{ Request::is('input*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Request::is('input*') ? 'active' : '' }}">
@@ -64,19 +66,47 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('input.ruas') }}" class="nav-link {{ Request::is('input/ruas') ? 'active' : '' }}">
+                            <a href="{{ route('input.ruas') }}"
+                                class="nav-link {{ Request::is('input/ruas') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Tambah Ruas</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
-                            <a href="{{ route('input.aset') }}" class="nav-link {{ Request::is('input/aset') ? 'active' : '' }}">
+                            <a href="{{ route('input.aset') }}"
+                                class="nav-link {{ Request::is('input/aset') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Tambah Aset</p>
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('input.aset-temp') }}"
+                                class="nav-link {{ Request::is('input/aset-temp') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tambah Aset (WIP)</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.maintenance') }}"
+                        class="nav-link {{ Request::is('maintenance') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-burn"></i>
+                        <p>Maintenance</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.manage_aset') }}"
+                        class="nav-link {{ Request::is('manage-aset') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-burn"></i>
+                        <p>Manage Aset</p>
+                    </a>
+                </li>
+                
                 <li class="nav-item">
                     <a href="{{ route('logout') }}" class="nav-link">
                         <i class="nav-icon fas fa-sign-out-alt"></i>

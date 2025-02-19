@@ -11,7 +11,8 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "mpdf/mpdf": "^8.2",
-        "tecnickcom/tcpdf": "^6.7"
+        "tecnickcom/tcpdf": "^6.7",
+        "twbs/bootstrap": "5.3.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

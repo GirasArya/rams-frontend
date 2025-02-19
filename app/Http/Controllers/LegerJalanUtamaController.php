@@ -13,7 +13,7 @@ class LegerJalanUtamaController extends Controller
 
     public function legerViewSelect(Request $request)
     {
-        $api = "http://117.53.47.111:91/api/leger/ruas";
+        $api = "http://localhost:8080/api/leger/ruas";
         $data = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $request->session()->get('token')
@@ -24,7 +24,7 @@ class LegerJalanUtamaController extends Controller
 
     public function legerEditSelect(Request $request)
     {
-        $api = "http://117.53.47.111:91/api/leger/ruas";
+        $api = "http://localhost:8080/api/leger/ruas";
         $data = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $request->session()->get('token')
@@ -37,7 +37,7 @@ class LegerJalanUtamaController extends Controller
 
     public function legerViewDetail(Request $request)
     {
-        $api = "http://117.53.47.111:91/api/leger/segmen/{$request->jalan_tol_id}";
+        $api = "http://localhost:8080/api/leger/segmen/{$request->jalan_tol_id}";
         $data = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $request->session()->get('token')
@@ -50,8 +50,8 @@ class LegerJalanUtamaController extends Controller
 
     public function legerEditDetail(Request $request)
     {
-        $api_segmen = "http://117.53.47.111:91/api/leger/segmen/{$request->jalan_tol_id}";
-        $api_leger = "http://117.53.47.111:91/api/leger/jalan-utama-all/{$request->jalan_tol_id}";
+        $api_segmen = "http://localhost:8080/api/leger/segmen/{$request->jalan_tol_id}";
+        $api_leger = "http://localhost:8080/api/leger/jalan-utama-all/{$request->jalan_tol_id}";
 
         $data_segmen = Http::withHeaders([
             'Accept' => 'application/json',
@@ -71,7 +71,7 @@ class LegerJalanUtamaController extends Controller
 
     public function legerGenerate(Request $request)
     {
-        $api = "http://117.53.47.111:91/api/leger/populate/{$request->jalan_tol_id}";
+        $api = "http://localhost:8080/api/leger/populate/{$request->jalan_tol_id}";
 
         $response = Http::withHeaders([
             'Accept' => 'application/json',
@@ -94,7 +94,7 @@ class LegerJalanUtamaController extends Controller
 
     public function legerPrint(Request $request)
     {
-        $url = "http://117.53.47.111:91/api/leger/jalan-utama/{$request->jalan_tol_id}/{$request->leger_id_awal}/{$request->leger_id_akhir}";
+        $url = "http://localhost:8080/api/leger/jalan-utama/{$request->jalan_tol_id}/{$request->leger_id_awal}/{$request->leger_id_akhir}";
         $data = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $request->session()->get('token')

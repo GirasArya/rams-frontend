@@ -25,7 +25,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $url = "http://117.53.47.111:91/api/login";
+        $url = "http://localhost:8080/api/login";
         $response = Http::withHeaders([
             'Accept' => 'application/json'
         ])->post($url, [
@@ -44,7 +44,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $url = "http://117.53.47.111:91/api/logout";
+        $url = "http://localhost:8080/api/logout";
         $response = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $request->session()->get('token')

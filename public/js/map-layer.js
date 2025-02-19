@@ -1,6 +1,6 @@
-var url_api = "http://117.53.47.111:91/api/data/aset/";
-var url_api = "http://117.53.47.111:91/api/data/aset/";
-var segmen_api = "http://117.53.47.111:91/api/data/segmen/";
+var url_api = "http://localhost:8080/api/data/aset/";
+var url_api = "http://localhost:8080/api/data/aset/";
+var segmen_api = "http://localhost:8080/api/data/segmen/";
 var url_icon = location.origin + "/img/map-icons/";
 
 

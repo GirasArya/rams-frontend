@@ -25,7 +25,7 @@ class InputController extends Controller
 
     public function storeRuas(Request $request)
     {
-        $url = "http://117.53.47.111:91/api/data/input-ruas";
+        $url = "http://localhost:8080/api/data/input-ruas";
         $response = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $request->session()->get('token')
@@ -42,10 +42,16 @@ class InputController extends Controller
         }
     }
 
+    //render view revamp input aset
+    public function inputAsetTemp()
+    {
+        return view('input.aset_temp');
+    }
+
     public function aset(Request $request)
     {
         // Get List Ruas
-        $url_list_ruas = "http://117.53.47.111:91/api/data/list-ruas";
+        $url_list_ruas = "http://localhost:8080/api/data/list-ruas";
         $response_list_ruas = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $request->session()->get('token')
@@ -53,7 +59,7 @@ class InputController extends Controller
         $list_ruas = $response_list_ruas->json();
 
         // Get Tipe Aset
-        $url_tipe_aset = "http://117.53.47.111:91/api/data/tipe-aset";
+        $url_tipe_aset = "http://localhost:8080/api/data/tipe-aset";
         $response_tipe_aset = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $request->session()->get('token')
@@ -68,7 +74,7 @@ class InputController extends Controller
 
     public function storeAset(Request $request)
     {
-        $url = "http://117.53.47.111:91/api/data/input-aset";
+        $url = "http://localhost:8080/api/data/input-aset";
         $response = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $request->session()->get('token')

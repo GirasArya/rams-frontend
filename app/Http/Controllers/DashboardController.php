@@ -20,7 +20,7 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        $url_dashboard = "http://117.53.47.111:91/api/dashboard";
+        $url_dashboard = "http://localhost:8080/api/dashboard";
         $response_dashboard = Http::withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $request->session()->get('token')

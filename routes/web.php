@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\ManageAsetController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InputController;
@@ -50,3 +52,13 @@ Route::get('/input/ruas', [InputController::class, 'ruas'])->name('input.ruas');
 Route::post('/input/ruas/store', [InputController::class, 'storeRuas'])->name('input.ruas.store');
 Route::get('/input/aset', [InputController::class, 'aset'])->name('input.aset');
 Route::post('/input/aset/store', [InputController::class, 'storeAset'])->name('input.aset.store');
+
+//Temp new input
+Route::get('/input/aset-temp', [InputController::class, 'inputAsetTemp']) -> name('input.aset-temp');
+
+//Maintenance Page
+Route::get('/maintenance', [MaintenanceController::class, 'index']) -> name('admin.maintenance');
+Route::post('/maintenance/store', [MaintenanceController::class, 'storeMaintenanceRecord']) -> name('admin.maintenance.api');
+
+//Manage aset list
+Route::get('/manage-aset', [ManageAsetController::class, 'index']) -> name('admin.manage_aset');

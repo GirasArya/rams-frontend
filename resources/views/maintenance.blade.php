@@ -22,11 +22,10 @@
         <div class="card mb-4">
             <div class="card-body ">
                 <section class="d-flex">
-                    <div id="admin-map" data-route="{{ route('admin.leger.jalanUtama.generate') }}" style="height: 600px">
+                    <div id="admin-map" style="height: 600px; width: 50%">
                     </div>
-                    <section class="w-100 d-flex flex-column gap-4" style="height: 50vh;">
+                    <section class="w-100 d-flex flex-column gap-4" style="height: 80vh;">
                         <div class="d-flex justify-content-end align-items-baseline">
-                            <!-- <button class="btn btn-success">Tambah</button> -->
                             <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                 data-bs-target="#RencanaPemeliharaanModal1">
                                 Tambah
@@ -38,8 +37,10 @@
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </section>
+
                         <!-- Accordion -->
-                        <div class="accordion ms-4" id="recordPemeliharaan" style="height: max-content; overflow-y: scroll;">
+                        <div class="accordion ms-4" id="recordPemeliharaan"
+                            style="height: max-content; overflow-y: scroll;">
                         </div>
 
 
@@ -50,7 +51,7 @@
     </section>
 
     <!-- Modal 1-->
-    <form id="MaintenanceForm" action="{{ route('admin.maintenance.api') }}" method="POST">
+    <form id="MaintenanceForm" action="{{ route('admin.maintenance.store') }}" method="POST">
         @csrf
         <div class="modal fade" id="RencanaPemeliharaanModal1" tabindex="-1" aria-labelledby="RencanaPemeliharaan"
             aria-hidden="true">
@@ -65,6 +66,12 @@
                                 <h5>Nama Pemeliharaan</h5>
                                 <input required type="text" class="form-control" name="nama_pemeliharaan"
                                     placeholder="Tuliskan Nama Pemeliharaan" aria-describedby="basic-addon1">
+                            </div>
+                            <div>
+                                <h5>Ruas Jalan tol</h5>
+                                <select name="ruas_jalan" class="form-control" id="ruas_jalan">
+                                    <option value="" selected disabled>Pilih satu</option>
+                                </select>
                             </div>
                             <div class="d-flex justify-content-between" style="gap:1rem;">
                                 <div class="w-100">
@@ -138,22 +145,18 @@
                             <div>
                                 <h5>Alokasi Biaya Pemeliharaan</h5>
                                 <input required type="text" class="form-control" name="biaya_pemeliharaan"
-                                    placeholder="Pilih satu" aria-describedby="basic-addon1">
+                                    aria-describedby="basic-addon1">
                             </div>
                             <div>
                                 <h5>Alokasi Biaya Impor</h5>
-                                <input required type="text" class="form-control" name="biaya_impor" placeholder="Pilih satu"
+                                <input required type="text" class="form-control" name="biaya_impor"
                                     aria-describedby="basic-addon1">
                             </div>
                             <div>
                                 <h5>Keterangan Pemeliharaan</h5>
                                 <input required type="text" class="form-control" name="keterangan_pemeliharaan"
-                                    placeholder="Pilih satu" aria-describedby="basic-addon1">
+                                    aria-describedby="basic-addon1">
                             </div>
-                            <!-- <div>
-                                                                                                                        <h5>Total Biaya Pemeliharaan</h5>
-                                                                                                                        <input type="text" name="total_biaya_pemeliharaan" disabled class="form-control">
-                                                                                                                    </div> -->
                         </section>
                     </div>
                     <div class="modal-footer">
@@ -169,7 +172,7 @@
     @push('scripts')
         <!-- Async fetch options -->
         <script>
-            document.addEventListener("DOMContentLoaded", async function () {
+            document.addEventListener("DOMContentLoaded", async function() {
                 // Inisialisasi Select2 setelah DOM selesai dimuat
                 const startKmSelect = $("#titik_km_awal").select({
                     allowClear: true,
@@ -203,9 +206,9 @@
                 }
             });
         </script>
-    
+
         <script>
-            document.addEventListener("DOMContentLoaded", async function () {
+            document.addEventListener("DOMContentLoaded", async function() {
                 // Inisialisasi Select2 setelah DOM selesai dimuat
                 const iri_jalan = $("#bagian_jalan").select({
                     allowClear: true,
@@ -233,7 +236,7 @@
         </script>
 
         <script>
-            document.addEventListener("DOMContentLoaded", async function () {
+            document.addEventListener("DOMContentLoaded", async function() {
                 const iri_jalur = $("#jalur").select({
                     allowClear: true,
                     width: "100%",
@@ -257,60 +260,156 @@
                 }
             });
         </script>
+
         <script>
-            document.addEventListener("DOMContentLoaded", async function () {
+            document.addEventListener("DOMContentLoaded", async function() {
+                // Inisialisasi Select2 setelah DOM selesai dimuat
+                const ruasJalanSelect = $("#ruas_jalan").select({
+                    allowClear: true,
+                    width: "100%",
+                });
+
+                // Fetch data untuk Start KM dan End KM
+                try {
+                    const response = await fetch("http://localhost:8080/api/get-ruas-jalan");
+                    const data = await response.json();
+                    const options = data.data;
+                    const ruasJalan = document.createDocumentFragment();
+                    options.forEach((option) => {
+                        const optionVal = option.id
+                        const displayText = option.nama;
+                        const newOption = new Option(displayText, optionVal, false, false);
+                        ruasJalan.appendChild(newOption);
+                    });
+                    ruasJalanSelect.append(ruasJalan).trigger("change");
+                } catch (error) {
+                    console.error("Error fetching bagian_jalan options:", error);
+                }
+            });
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", async function() {
                 try {
                     const response = await fetch("http://localhost:8080/api/maintenance");
                     const data = await response.json();
                     const accordion = document.getElementById('recordPemeliharaan');
                     const loading = document.getElementById('recordLoading');
                     if (Array.isArray(data) && data.length > 0) {
-                        loading.classList.add('d-none')
+                        loading.classList.add('d-none');
                         data.forEach((item, key) => {
+                            console.log(item)
                             const accordionItem = document.createElement('div');
                             accordionItem.classList.add('accordion-item');
                             accordionItem.innerHTML = `
-                                                                                                            <h2 class="accordion-header">
-                                                                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                                                                                                    data-bs-target="#collapse${key}" aria-expanded="false" aria-controls="collapse${key}"> 
-                                                                                                                    ${item.nama}
-                                                                                                                </button>
-                                                                                                            </h2>
-                                                                                                            <div id="collapse${key}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                                                                                                                <div class="accordion-body">
-                                                                                                                    <p><strong>KM Awal:</strong> ${item.km_awal || 'N/A'}</p>
-                                                                                                                    <p><strong>KM Akhir:</strong> ${item.km_akhir || 'N/A'}</p>
-                                                                                                                    <p><strong>Jalur:</strong> ${item.jalur || 'N/A'}</p>
-                                                                                                                    <p><strong>Bagian Jalan:</strong> ${item.bagian_jalan || 'N/A'}</p>
-                                                                                                                    <p><strong>Periode Awal:</strong> ${item.periode_awal || 'N/A'}</p>
-                                                                                                                    <p><strong>Periode Akhir:</strong> ${item.periode_akhir || 'N/A'}</p>
-                                                                                                                    <p><strong>Jenis Pemeliharaan:</strong> ${item.jenis_pemeliharaan || 'N/A'}</p>
-                                                                                                                    <p><strong>Biaya Pemeliharaan:</strong> ${item.biaya_pemeliharaan || 'N/A'}</p>
-                                                                                                                    <p><strong>Biaya Impor:</strong> ${item.biaya_impor || 'N/A'}</p>
-                                                                                                                    <p><strong>Keterangan Pemeliharaan:</strong> ${item.keterangan_pemeliharaan || 'N/A'}</p>
-                                                                                                                    <p><strong>Total Biaya:</strong> ${item.total_biaya || 'N/A'}</p>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        `;
+                        <div class="accordion-header">
+                            <button
+                                class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse${key}" aria-expanded="false" aria-controls="collapse${key}" style="gap:2rem;"> 
+                                <section class="d-flex justify-content-between align-items-center w-100">
+                                    <div class="d-flex flex-column">
+                                        <h4>
+                                            ${item.nama}
+                                        </h4>
+                                        <p class="mb-0">
+                                            Pemeliharaan ${item.jenis_pemeliharaan}
+                                        </p>
+                                        <p class="mb-0">
+                                            ${new Date(item.periode_awal).getFullYear()} - ${new Date(item.periode_akhir).getFullYear()}
+                                        </p>
+                                    </div>
+                                    <h4>
+                                        ${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.total_biaya)}
+                                    </h4>
+                                </section>
+                            </button>
+                        </div>
+                        <div id="collapse${key}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="d-flex justify-content-between align-items-center w-100">
+                                    <p><strong>KM Awal:</strong> ${item.km_awal || 'N/A'}</p>
+                                    <p><strong>KM Akhir:</strong> ${item.km_akhir || 'N/A'}</p>
+                                </div>
+                                    
+                                    <p><strong>Ruas jalan : </strong> ${item.ruas_jalan && item.ruas_jalan[0] ? item.ruas_jalan[0].nama : 'N/A'}</p>
+
+                                
+                                <h5>Simulasi Kalkulasi Anggaran</h5>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Tahun</th>
+                                            <th>Biaya Pemeliharaan Tahunan</th>
+                                            <th>Total Biaya Pemeliharaan + Pajak</th>
+                                            <th>Total Biaya Impor Tahunan</th>
+                                            <th>Total Biaya Keseluruhan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="budgetTableBody${key}">
+                                        </tbody>
+                                </table>
+                                <p><strong>Total Biaya:</strong> ${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.total_biaya)}</p>
+
+                                <div class="d-flex justify-content-end" style="gap: .8rem;">
+                                    <button type="button" onclick="deleteMaintenanceRecord(${item.id})" class="btn btn-danger">Delete</button>
+                                    <button type="button" class="btn btn-success">Export</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                             accordion.appendChild(accordionItem);
+
+                            // Calculate and populate budget table
+                            populateBudgetTable(item, key);
                         });
                     } else {
                         accordion.innerHTML =
-                            `<div class="d-none justify-content-center align-items-center" style="height:80%">
-                                                                                                <h4>Belum ada data</h4>
-                                                                                            </div>`;
+                            `<div class="d-none justify-content-center align-items-center" style="height:80%"><h4>Belum ada data</h4></div>`;
                     }
                 } catch (error) {
                     console.error("Error fetching jalur options:", error);
                 }
             });
+
+            function populateBudgetTable(item, key) {
+                const periodeAwal = new Date(item.periode_awal);
+                const periodeAkhir = new Date(item.periode_akhir);
+                const selisihTahun = periodeAkhir.getFullYear() - periodeAwal.getFullYear();
+                const biayaPemeliharaan = item.biaya_pemeliharaan;
+                const biayaImpor = item.biaya_impor;
+                const inflasi = 0.05;
+                const kursDolar = 15000;
+                const pajak = 0.10;
+                let totalBiaya = 0;
+                const tableBody = document.getElementById(`budgetTableBody${key}`);
+                tableBody.innerHTML = ''; // Clear previous table rows
+
+                for (let t = 1; t <= selisihTahun; t++) {
+                    const biayaPemeliharaanTahunan = biayaPemeliharaan * Math.pow(1 + inflasi, t);
+                    const totalBiayaPemeliharaanPajak = biayaPemeliharaanTahunan * (1 + pajak);
+                    const totalBiayaImpor = biayaImpor * kursDolar;
+                    const totalBiayaImporTahunan = totalBiayaImpor / selisihTahun;
+                    const totalBiayaKeseluruhan = totalBiayaImporTahunan + totalBiayaPemeliharaanPajak;
+                    totalBiaya += totalBiayaKeseluruhan;
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                <td>${periodeAwal.getFullYear() + t}</td>
+                <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(biayaPemeliharaanTahunan)}</td>
+                <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalBiayaPemeliharaanPajak)}</td>
+                <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalBiayaImporTahunan)}</td>
+                <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalBiayaKeseluruhan)}</td>
+            `;
+                    tableBody.appendChild(row);
+                }
+            }
         </script>
 
         <!-- Map config -->
         <script src="{{ asset('template') }}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="{{ asset('js/map-layer.js') }}"></script>
         <script>
-            $(function () {
+            $(function() {
                 $('.select2').select2({
                     theme: 'bootstrap4'
                 });
@@ -338,9 +437,24 @@
                 //     legendKey: null
                 // },
                 {
-                    name: "IRI",
+                    name: "IRI-Semua",
                     layer: "getIRIPolygonLayer",
                     legendKey: "iri"
+                },
+                {
+                    name: "IRI-Sedang",
+                    layer: "getSedangIRILayer",
+                    legendKey: "iri-sedang"
+                },
+                {
+                    name: "IRI-Rusak Ringan",
+                    layer: "getRusakRinganIRILayer",
+                    legendKey: "iri-rusak-ringan"
+                },
+                {
+                    name: "IRI-Rusak Berat",
+                    layer: "getRusakBeratIRILayer",
+                    legendKey: "iri-berat"
                 },
                 // {
                 //     name: "Segmen Tol",
@@ -445,7 +559,7 @@
             const map = L.map('admin-map', {
                 center: [-4.881600, 105.230373],
                 zoom: 16,
-                layers: [osm_map, baseGroupMaps["IRI"]],
+                layers: [osm_map, baseGroupMaps["IRI-Semua"]],
             });
 
             const layerGroup = L.layerGroup().addTo(map);
@@ -541,7 +655,7 @@
 
             initializeLayerControl();
 
-            document.getElementById('apply-filter-button').addEventListener('click', function () {
+            document.getElementById('apply-filter-button').addEventListener('click', function() {
                 updateMapLayers();
             });
 
@@ -596,7 +710,7 @@
                 const legend = L.control({
                     position
                 });
-                legend.onAdd = function () {
+                legend.onAdd = function() {
                     const div = L.DomUtil.create("div", "custom-legend");
                     div.innerHTML += '<div class="font-weight-bold">Keterangan:</div>';
                     categories.forEach((category, i) => {
@@ -617,7 +731,7 @@
             }
 
 
-            map.on('overlayadd', function (event) {
+            map.on('overlayadd', function(event) {
 
                 const layerName = event.name;
                 console.log(`Overlay added: ${layerName}`);
@@ -635,7 +749,7 @@
                 }
             });
 
-            map.on('overlayremove', function (event) {
+            map.on('overlayremove', function(event) {
                 const layerName = event.name;
 
                 // Cocokkan layer dengan `baseGroupMapsConfig`
@@ -647,13 +761,42 @@
             });
         </script>
 
-        @if (session('success'))
+        @if (session('success-store'))
             <script>
                 alert("Success sending maintenance record!")
+            </script>
+        @elseif(session('success-delete'))
+            <script>
+                alert('Success deleting maintenance record')
             </script>
         @endif
     @endpush
 
+
+    <script>
+        function deleteMaintenanceRecord(id) {
+            fetch(`http://localhost:8080/api/maintenance/data/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content')
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.message) {
+                        console.log(data.message)
+                    }
+                    alert("Delete success")
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
 
 
 @endsection

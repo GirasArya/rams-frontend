@@ -21,45 +21,56 @@ class ManageAsetController extends Controller
 
     public function index(Request $request)
     {
-        return view('manage_aset');
+        // Get Tipe Aset
+        $url_tipe_aset = "http://localhost:8080/api/data/tipe-aset";
+        $response_tipe_aset = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $request->session()->get('token')
+        ])->get($url_tipe_aset);
+        $tipe_aset = $response_tipe_aset->json();
+
+        return view('manage_aset', compact(
+            'tipe_aset'
+        ));
     }
 
-    public function inputAsetTemp()
+    public function inputAsetTemp(Request $request)
     {
-        return view('input.aset_temp');
+
+        // Get Tipe Aset
+        $url_tipe_aset = "http://localhost:8080/api/data/tipe-aset";
+        $response_tipe_aset = Http::withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $request->session()->get('token')
+        ])->get($url_tipe_aset);
+        $tipe_aset = $response_tipe_aset->json();
+
+        return view('input.aset_temp', compact(
+            'tipe_aset'
+        ));
     }
 
     public function storeAssetRecord(Request $request)
     {
         $url = "http://localhost:8080/api/manage/aset/store";
         $response = Http::withHeaders([
-            'Accept' => 'application/json'
-        ])->post($url, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $request->session()->get('token')
+        ])->attach(
+                'geojson',
+                file_get_contents($request->file('geojson')->getRealPath()),
+                $request->file('geojson')->getClientOriginalName()
+            )->post($url, [
                     'id_ruas' => $request->ruas_jalan,
                     'jenis_aset' => $request->jenis_aset,
-                    'titik_km' => $request->titik_km,
-                    'masa_hidup' => $request->masa_hidup,
-                    'status' => $request->status,
-                    'tanggal_pemasangan' => $request->tanggal_pemasangan,
+                    'tanggal_pemasangan' => $request->tanggal_pemasangan
                 ]);
 
         if ($response->successful()) {
-            return redirect()->route('admin.manage_aset')->with('success-store', 'Maintenance record created successfully!');
+            return back()->with('success', "Aset berhasil ditambahkan");
         } else {
-
-            $errorData = $response->json();
-            $errorMessage = "Error creating maintenance record. ";
-
-            if (isset($errorData['message'])) {
-                $errorMessage .= $errorData['message'];
-            } else if ($response->status() == 422) {
-                $errorMessage .= "Validation Error. Please check your input.";
-            } else {
-                $errorMessage .= "Status Code: " . $response->status();
-            }
-
-            return back()->withErrors(['error' => $errorMessage])->withInput();
+            $error_message = $response->json()['message'] ?? "Aset gagal ditambahkan";
+            return back()->with('danger', $error_message);
         }
     }
-
 }

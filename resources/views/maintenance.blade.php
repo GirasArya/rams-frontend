@@ -17,19 +17,36 @@
         </div>
     </section>
 
+    <!-- Alert -->
+    @foreach (['success', 'danger'] as $message)
+        @if (session($message))
+            <div class="mt-2 mx-2 alert alert-{{ $message }} alert-dismissible fade show" role="alert">
+                {{ session($message) }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+    @endforeach
+
 
     <section class="content">
         <div class="card mb-4">
             <div class="card-body ">
                 <section class="d-flex">
-                    <div id="admin-map" style="height: 600px; width: 50%">
+                    <div id="admin-map" style="width: 50%;">
                     </div>
                     <section class="w-100 d-flex flex-column gap-4" style="height: 80vh;">
                         <div class="d-flex justify-content-end align-items-baseline">
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                            {{-- <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                 data-bs-target="#RencanaPemeliharaanModal1">
                                 Tambah
-                            </button>
+                            </button> --}}
+                            <a href={{ route('admin.maintenance.activity') }}>
+                                <button type="button" class="btn btn-success">
+                                    Tambah
+                                </button>
+                            </a>
                         </div>
 
                         <section id="recordLoading" class="d-flex align-items-center justify-content-center h-100">
@@ -50,153 +67,39 @@
         </div>
     </section>
 
-    <!-- Modal 1-->
-    <form id="MaintenanceForm" action="{{ route('admin.maintenance.store') }}" method="POST">
-        @csrf
-        <div class="modal fade" id="RencanaPemeliharaanModal1" tabindex="-1" aria-labelledby="RencanaPemeliharaan"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title fs-5" id="RencanaPemeliharaan">Tambah Rencana Pemeliharaan</h3>
-                    </div>
-                    <div class="modal-body">
-                        <section class="d-flex flex-column" style="gap:1rem;">
-                            <div>
-                                <h5>Nama Pemeliharaan</h5>
-                                <input required type="text" class="form-control" name="nama_pemeliharaan"
-                                    placeholder="Tuliskan Nama Pemeliharaan" aria-describedby="basic-addon1">
-                            </div>
-                            <div>
-                                <h5>Ruas Jalan tol</h5>
-                                <select name="ruas_jalan" class="form-control" id="ruas_jalan">
-                                    <option value="" selected disabled>Pilih satu</option>
-                                </select>
-                            </div>
-                            <div class="d-flex justify-content-between" style="gap:1rem;">
-                                <div class="w-100">
-                                    <h5>Titik KM Awal</h5>
-                                    <select name="titik_km_awal" class="form-control" id="titik_km_awal">
-                                        <option value="" selected disabled>Pilih satu</option>
-                                    </select>
-                                </div>
-                                <div class="w-100">
-                                    <h5>Titik KM Akhir</h5>
-                                    <select name="titik_km_akhir" class="form-control" id="titik_km_akhir">
-                                        <option value="" selected disabled>Pilih satu</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between" style="gap:1rem;">
-                                <div class="w-100">
-                                    <h5>Jalur</h5>
-                                    <select name="jalur" class="form-control" id="jalur">
-                                        <option value="" selected disabled>Pilih satu</option>
-                                    </select>
-                                </div>
-                                <div class="w-100">
-                                    <h5>Bagian Jalan</h5>
-                                    <select name="bagian_jalan" class="form-control" id="bagian_jalan">
-                                        <option value="" selected disabled>Pilih satu</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between" style="gap:1rem;">
-                                <div class="w-100">
-                                    <h5>Periode Awal</h5>
-                                    <input required type="date" class="form-control" name="periode_awal"
-                                        placeholder="Pilih satu" aria-describedby="basic-addon1">
-                                </div>
-                                <div class="w-100">
-                                    <h5>Periode Akhir</h5>
-                                    <input required type="date" class="form-control" name="periode_akhir"
-                                        placeholder="Pilih satu" aria-describedby="basic-addon1">
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" data-bs-target="#RencanaPemeliharaanModal2"
-                            data-bs-toggle="modal">Next</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal 2 -->
-        <div class="modal fade" id="RencanaPemeliharaanModal2" tabindex="-1" aria-labelledby="RencanaPemeliharaan"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title fs-5" id="RencanaPemeliharaan">Tambah Rencana Pemeliharaan</h3>
-                    </div>
-                    <div class="modal-body">
-                        <section class="d-flex flex-column" style="gap:1rem;">
-                            <div>
-                                <h5>Jenis Pemeliharaan</h5>
-                                <select name="jenis_pemeliharaan" class="form-control" id="jenis_pemeliharaan">
-                                    <option value="" selected disabled>Pilih satu</option>
-                                    <option value="rutin">Pemeliharaan Rutin</option>
-                                    <option value="berkala">Pemeliharaan Berkala</option>
-                                </select>
-                            </div>
-                            <div>
-                                <h5>Alokasi Biaya Pemeliharaan</h5>
-                                <input required type="text" class="form-control" name="biaya_pemeliharaan"
-                                    aria-describedby="basic-addon1">
-                            </div>
-                            <div>
-                                <h5>Alokasi Biaya Impor</h5>
-                                <input required type="text" class="form-control" name="biaya_impor"
-                                    aria-describedby="basic-addon1">
-                            </div>
-                            <div>
-                                <h5>Keterangan Pemeliharaan</h5>
-                                <input required type="text" class="form-control" name="keterangan_pemeliharaan"
-                                    aria-describedby="basic-addon1">
-                            </div>
-                        </section>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-target="#RencanaPemeliharaanModal1"
-                            data-bs-toggle="modal">Return</button>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-
     @push('scripts')
         <!-- Async fetch options -->
         <script>
-            document.addEventListener("DOMContentLoaded", async function() {
-                // Inisialisasi Select2 setelah DOM selesai dimuat
-                const startKmSelect = $("#titik_km_awal").select({
-                    allowClear: true,
-                    width: "100%",
-                });
-
-                const endKmSelect = $("#titik_km_akhir").select({
-                    allowClear: true,
-                    width: "100%",
-                });
-
-                // Fetch data untuk Start KM dan End KM
+            document.getElementById('nilai_iri_dropdown').addEventListener('change', async function() {
+                const nilaiIriDropdown = document.getElementById('nilai_iri_dropdown').value
                 try {
-                    const response = await fetch("http://localhost:8080/api/get-km-iri-options");
+                    const response = await fetch(
+                        `http://localhost:8080/api/get-km-iri-options/${nilaiIriDropdown}`);
                     const data = await response.json();
                     const options = data.data;
                     const startKmFragment = document.createDocumentFragment();
                     const endKmFragment = document.createDocumentFragment();
 
-                    options.forEach((option) => {
-                        const displayText = option.km;
-                        const newOption = new Option(displayText, option.km, false, false);
-                        startKmFragment.appendChild(newOption);
-                        endKmFragment.appendChild(newOption.cloneNode(true));
+                    if (options.length === 0) {
+                        const noDataOption = new Option("No data", "", false, false);
+                        startKmFragment.appendChild(noDataOption);
+                        endKmFragment.appendChild(noDataOption.cloneNode(true));
+                    } else {
+                        options.forEach((option) => {
+                            const displayText = option.km;
+                            const newOption = new Option(displayText, option.km, false, false);
+                            startKmFragment.appendChild(newOption);
+                            endKmFragment.appendChild(newOption.cloneNode(true));
+                        });
+                    }
+
+                    const startKmSelect = $("#titik_km_awal").empty().select({
+                        allowClear: true,
+                        width: "100%",
+                    });
+                    const endKmSelect = $("#titik_km_akhir").empty().select({
+                        allowClear: true,
+                        width: "100%",
                     });
 
                     startKmSelect.append(startKmFragment).trigger("change");
@@ -298,109 +201,119 @@
                     if (Array.isArray(data) && data.length > 0) {
                         loading.classList.add('d-none');
                         data.forEach((item, key) => {
-                            console.log(item)
                             const accordionItem = document.createElement('div');
                             accordionItem.classList.add('accordion-item');
                             accordionItem.innerHTML = `
                         <div class="accordion-header">
-                            <button
-                                class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapse${key}" aria-expanded="false" aria-controls="collapse${key}" style="gap:2rem;"> 
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse${key}" aria-expanded="false" aria-controls="collapse${key}" style="gap:2rem;">
                                 <section class="d-flex justify-content-between align-items-center w-100">
                                     <div class="d-flex flex-column">
-                                        <h4>
-                                            ${item.nama}
-                                        </h4>
-                                        <p class="mb-0">
-                                            Pemeliharaan ${item.jenis_pemeliharaan}
-                                        </p>
-                                        <p class="mb-0">
-                                            ${new Date(item.periode_awal).getFullYear()} - ${new Date(item.periode_akhir).getFullYear()}
-                                        </p>
+                                        <h5 class="mb-1">${item.nama}</h5>
+                                        <small class="text-muted">${new Date(item.periode_awal).getFullYear()} - ${new Date(item.periode_akhir).getFullYear()}</small>
                                     </div>
-                                    <h4>
-                                        ${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.total_biaya)}
-                                    </h4>
+                                    <h5 class="mb-0">${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.total_biaya)}</h5>
                                 </section>
                             </button>
                         </div>
-                        <div id="collapse${key}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div id="collapse${key}" class="accordion-collapse collapse" data-bs-parent="#recordPemeliharaan">
                             <div class="accordion-body">
-                                <div class="d-flex justify-content-between align-items-center w-100">
-                                    <p><strong>KM Awal:</strong> ${item.km_awal || 'N/A'}</p>
-                                    <p><strong>KM Akhir:</strong> ${item.km_akhir || 'N/A'}</p>
-                                </div>
-                                    
-                                    <p><strong>Ruas jalan : </strong> ${item.ruas_jalan && item.ruas_jalan[0] ? item.ruas_jalan[0].nama : 'N/A'}</p>
+                                <p><strong>Ruas Jalan:</strong> ${item.ruas_jalan?.[0]?.nama || 'N/A'}</p>
+                                <p><strong>KM Awal:</strong> ${item.km_awal || 'N/A'} | <strong>KM Akhir:</strong> ${item.km_akhir || 'N/A'} | <strong>Jalur:</strong> ${item.jalur || '-'}</p>
 
-                                
-                                <h5>Simulasi Kalkulasi Anggaran</h5>
+                                <h6 class="mt-4">Simulasi Kalkulasi Anggaran per Tahun</h6>
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Tahun</th>
-                                            <th>Biaya Pemeliharaan Tahunan</th>
-                                            <th>Total Biaya Pemeliharaan + Pajak</th>
-                                            <th>Total Biaya Impor Tahunan</th>
-                                            <th>Total Biaya Keseluruhan</th>
+                                            <th>Nama Kegiatan</th>
+                                            <th>Jenis Pemeliharaan</th>
+                                            <th>Frekuensi (Tahun)</th>
+                                            <th>Anggaran per Meter</th>
+                                            <th>Jumlah Tenaga Kerja (Orang)</th>
+                                            <th>Total Biaya</th>
                                         </tr>
                                     </thead>
                                     <tbody id="budgetTableBody${key}">
-                                        </tbody>
+                                        <!-- diisi via JS -->
+                                    </tbody>
                                 </table>
-                                <p><strong>Total Biaya:</strong> ${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.total_biaya)}</p>
 
-                                <div class="d-flex justify-content-end" style="gap: .8rem;">
+                                <div class="d-flex justify-content-end mt-3" style="gap: .8rem;">
                                     <button type="button" onclick="deleteMaintenanceRecord(${item.id})" class="btn btn-danger">Delete</button>
-                                    <button type="button" class="btn btn-success">Export</button>
+                                    <form action="{{ route('admin.maintenance.print') }}" method="POST" target="_blank">
+                                        @csrf
+                                        <input type="hidden" name="id" value="${item.id}">
+                                        <button type="submit" class="btn btn-success">Export</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     `;
                             accordion.appendChild(accordionItem);
-
-                            // Calculate and populate budget table
                             populateBudgetTable(item, key);
                         });
-                    } else {
-                        accordion.innerHTML =
-                            `<div class="d-none justify-content-center align-items-center" style="height:80%"><h4>Belum ada data</h4></div>`;
                     }
                 } catch (error) {
-                    console.error("Error fetching jalur options:", error);
+                    loading.classList.add('d-none');
+                    console.error(error);
                 }
             });
+
+            function selisihJarak(kmAwal, kmAkhir) {
+                const parseKM = (km) => {
+                    if (!km.includes('+')) return parseFloat(km);
+                    const [kmPart, meterPart] = km.split('+').map(Number);
+                    return (kmPart * 1000) + (meterPart);
+                }
+                return parseKM(kmAkhir) - parseKM(kmAwal);
+            }
 
             function populateBudgetTable(item, key) {
                 const periodeAwal = new Date(item.periode_awal);
                 const periodeAkhir = new Date(item.periode_akhir);
                 const selisihTahun = periodeAkhir.getFullYear() - periodeAwal.getFullYear();
-                const biayaPemeliharaan = item.biaya_pemeliharaan;
-                const biayaImpor = item.biaya_impor;
                 const inflasi = 0.05;
-                const kursDolar = 15000;
-                const pajak = 0.10;
-                let totalBiaya = 0;
+                const selisihKM = selisihJarak(item.km_awal, item.km_akhir);
+                console.log(selisihKM)
+                const detailAktivitasList = item.aktivitasKegiatan || [];
+
                 const tableBody = document.getElementById(`budgetTableBody${key}`);
-                tableBody.innerHTML = ''; // Clear previous table rows
+                tableBody.innerHTML = '';
 
-                for (let t = 1; t <= selisihTahun; t++) {
-                    const biayaPemeliharaanTahunan = biayaPemeliharaan * Math.pow(1 + inflasi, t);
-                    const totalBiayaPemeliharaanPajak = biayaPemeliharaanTahunan * (1 + pajak);
-                    const totalBiayaImpor = biayaImpor * kursDolar;
-                    const totalBiayaImporTahunan = totalBiayaImpor / selisihTahun;
-                    const totalBiayaKeseluruhan = totalBiayaImporTahunan + totalBiayaPemeliharaanPajak;
-                    totalBiaya += totalBiayaKeseluruhan;
+                for (let t = 0; t <= selisihTahun; t++) {
+                    const tahun = periodeAwal.getFullYear() + t;
+                    const kegiatanTahunIni = detailAktivitasList.map(aktivitas => {
+                        const anggaranPerMeter = parseFloat(aktivitas.anggaran_kegiatan_per_meter || 0);
+                        const frekuensi = parseFloat(aktivitas.frekuensi_kegiatan_per_tahun || 0);
+                        const tenagaKerja = parseInt(aktivitas.jumlah_tenaga_kerja || 0);
+                        const anggaranDenganInflasi = anggaranPerMeter * Math.pow(1 + inflasi, t);
+                        const biayaTahunan = anggaranDenganInflasi * selisihKM * frekuensi;
 
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                <td>${periodeAwal.getFullYear() + t}</td>
-                <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(biayaPemeliharaanTahunan)}</td>
-                <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalBiayaPemeliharaanPajak)}</td>
-                <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalBiayaImporTahunan)}</td>
-                <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalBiayaKeseluruhan)}</td>
-            `;
-                    tableBody.appendChild(row);
+                        return {
+                            nama_kegiatan: aktivitas.nama_kegiatan || '-',
+                            jenis_pemeliharaan: aktivitas.jenis_pemeliharaan || '-',
+                            frekuensi,
+                            anggaranPerMeter,
+                            anggaranDenganInflasi,
+                            tenagaKerja,
+                            biayaTahunan
+                        };
+                    });
+
+                    kegiatanTahunIni.forEach((aktivitas, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                         ${index === 0 ? `<td rowspan="${kegiatanTahunIni.length}">${tahun}</td>` : ''}
+                            <td>${aktivitas.nama_kegiatan}</td>
+                            <td>${aktivitas.jenis_pemeliharaan}</td>
+                            <td>${aktivitas.frekuensi}</td>
+                            <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(aktivitas.anggaranDenganInflasi)}</td>
+                            <td>${aktivitas.tenagaKerja}</td>
+                            <td>${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(aktivitas.biayaTahunan)}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
                 }
             }
         </script>
@@ -761,42 +674,29 @@
             });
         </script>
 
-        @if (session('success-store'))
-            <script>
-                alert("Success sending maintenance record!")
-            </script>
-        @elseif(session('success-delete'))
-            <script>
-                alert('Success deleting maintenance record')
-            </script>
-        @endif
+        <script>
+            function deleteMaintenanceRecord(id) {
+                fetch(`http://localhost:8080/api/maintenance/data/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                'content')
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.message) {
+                            console.log(data.message)
+                        }
+                        alert("Delete success")
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        </script>
     @endpush
-
-
-    <script>
-        function deleteMaintenanceRecord(id) {
-            fetch(`http://localhost:8080/api/maintenance/data/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content')
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    if (data.message) {
-                        console.log(data.message)
-                    }
-                    alert("Delete success")
-                    location.reload();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-    </script>
-
-
 @endsection

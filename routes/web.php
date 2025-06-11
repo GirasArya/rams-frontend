@@ -53,12 +53,17 @@ Route::post('/input/ruas/store', [InputController::class, 'storeRuas'])->name('i
 Route::get('/input/aset', [InputController::class, 'aset'])->name('input.aset');
 Route::post('/input/aset/store', [InputController::class, 'storeAset'])->name('input.aset.store');
 
-//Temp new input
-Route::get('/input/aset-temp', [InputController::class, 'inputAsetTemp']) -> name('input.aset-temp');
+
 
 //Maintenance Page
-Route::get('/maintenance', [MaintenanceController::class, 'index']) -> name('admin.maintenance');
-Route::post('/maintenance/store', [MaintenanceController::class, 'storeMaintenanceRecord']) -> name('admin.maintenance.api');
+Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('admin.maintenance');
+Route::get('/maintenance/activity', [MaintenanceController::class, 'maintenanceActivity'])->name('admin.maintenance.activity');
+Route::post('/maintenance/store', [MaintenanceController::class, 'storeMaintenanceRecord'])->name('admin.maintenance.store');
+Route::post('/maintenance/print', [MaintenanceController::class, 'exportRecord'])->name('admin.maintenance.print');
+
 
 //Manage aset list
-Route::get('/manage-aset', [ManageAsetController::class, 'index']) -> name('admin.manage_aset');
+Route::get('/manage-aset', [ManageAsetController::class, 'index'])->name('admin.manage_aset'); //dahsboard manage aset
+Route::get('/input/aset-temp', [ManageAsetController::class, 'inputAsetTemp'])->name('input.aset-temp'); //input manage aset
+Route::post('input/aset/store/new', [ManageAsetController::class, 'storeAssetRecord'])->name('admin.asset.store');
+Route::post('input/aset/store/filter', [ManageAsetController::class, 'storeAssetRecord'])->name('admin.asset.filter');

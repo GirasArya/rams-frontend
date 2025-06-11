@@ -73,19 +73,19 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="{{ route('input.aset') }}"
                                 class="nav-link {{ Request::is('input/aset') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Tambah Aset</p>
                             </a>
-                        </li>
+                        </li> --}}
 
                         <li class="nav-item">
                             <a href="{{ route('input.aset-temp') }}"
                                 class="nav-link {{ Request::is('input/aset-temp') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Tambah Aset (WIP)</p>
+                                <p>Tambah Aset</p>
                             </a>
                         </li>
                     </ul>
@@ -94,7 +94,7 @@
                 <li class="nav-item">
                     <a href="{{ route('admin.maintenance') }}"
                         class="nav-link {{ Request::is('maintenance') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-burn"></i>
+                        <i class="nav-icon fas fa-code"></i>
                         <p>Maintenance</p>
                     </a>
                 </li>
@@ -102,7 +102,7 @@
                 <li class="nav-item">
                     <a href="{{ route('admin.manage_aset') }}"
                         class="nav-link {{ Request::is('manage-aset') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-burn"></i>
+                        <i class="nav-icon fas fa-list"></i>
                         <p>Manage Aset</p>
                     </a>
                 </li>

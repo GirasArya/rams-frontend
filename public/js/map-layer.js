@@ -161,6 +161,136 @@ function getIRIPolygonLayer(start_km="", end_km="") {
     });
 }
 
+
+function getSedangIRILayer(start_km="", end_km="") {
+    const fullUrl = `${url_api}iri_sedang?start_km=${start_km || ''}&end_km=${end_km || ''}`;
+    console.log("iri url: ", fullUrl);
+    return new L.GeoJSON.AJAX(fullUrl, {
+        style: function (feature) {
+            return {
+                weight: 1,
+                color: "black",
+                fillOpacity: 1,
+                fillColor: getIRIColor(feature.properties.nilai_iri),
+            };
+        },
+    }).bindPopup(function (layer) {
+        return `<div class="custom-map-popup">
+                    <div class="popup-header text-center">
+                        ${layer.feature.properties.sgm_tol}
+                        ${
+                            layer.feature.properties.km !== "-"
+                                ? "<br/> KM " + layer.feature.properties.km
+                                : ""
+                        }
+                    </div>
+                    <div class="popup-body">
+                        <div class="mb-1"><span class="font-weight-bold">Jalur</span>: ${
+                            layer.feature.properties.jalur
+                        }</div>
+                        <div class="mb-1"><span class="font-weight-bold">Bagian Jalan</span>: ${
+                            layer.feature.properties.bagian_jalan
+                        }</div>
+                        <div class="mb-1"><span class="font-weight-bold">Lebar</span>: ${
+                            layer.feature.properties.lebar
+                        }</div>
+                        <div class="mb-1">
+                            <div class="font-weight-bold mb-1">Nilai IRI:</div> 
+                            <h3 class="text-center font-weight-bold border mb-0">${
+                                layer.feature.properties.nilai_iri
+                            }</h3>
+                        </div>
+                    </div>
+                </div>`;
+    });
+}
+
+function getRusakRinganIRILayer(start_km="", end_km="") {
+    const fullUrl = `${url_api}iri_ringan?start_km=${start_km || ''}&end_km=${end_km || ''}`;
+    console.log("iri url: ", fullUrl);
+    return new L.GeoJSON.AJAX(fullUrl, {
+        style: function (feature) {
+            return {
+                weight: 1,
+                color: "black",
+                fillOpacity: 1,
+                fillColor: getIRIColor(feature.properties.nilai_iri),
+            };
+        },
+    }).bindPopup(function (layer) {
+        return `<div class="custom-map-popup">
+                    <div class="popup-header text-center">
+                        ${layer.feature.properties.sgm_tol}
+                        ${
+                            layer.feature.properties.km !== "-"
+                                ? "<br/> KM " + layer.feature.properties.km
+                                : ""
+                        }
+                    </div>
+                    <div class="popup-body">
+                        <div class="mb-1"><span class="font-weight-bold">Jalur</span>: ${
+                            layer.feature.properties.jalur
+                        }</div>
+                        <div class="mb-1"><span class="font-weight-bold">Bagian Jalan</span>: ${
+                            layer.feature.properties.bagian_jalan
+                        }</div>
+                        <div class="mb-1"><span class="font-weight-bold">Lebar</span>: ${
+                            layer.feature.properties.lebar
+                        }</div>
+                        <div class="mb-1">
+                            <div class="font-weight-bold mb-1">Nilai IRI:</div> 
+                            <h3 class="text-center font-weight-bold border mb-0">${
+                                layer.feature.properties.nilai_iri
+                            }</h3>
+                        </div>
+                    </div>
+                </div>`;
+    });
+}
+
+function getRusakBeratIRILayer(start_km="", end_km="") {
+    const fullUrl = `${url_api}iri_berat?start_km=${start_km || ''}&end_km=${end_km || ''}`;
+    console.log("iri url: ", fullUrl);
+    return new L.GeoJSON.AJAX(fullUrl, {
+        style: function (feature) {
+            return {
+                weight: 1,
+                color: "black",
+                fillOpacity: 1,
+                fillColor: getIRIColor(feature.properties.nilai_iri),
+            };
+        },
+    }).bindPopup(function (layer) {
+        return `<div class="custom-map-popup">
+                    <div class="popup-header text-center">
+                        ${layer.feature.properties.sgm_tol}
+                        ${
+                            layer.feature.properties.km !== "-"
+                                ? "<br/> KM " + layer.feature.properties.km
+                                : ""
+                        }
+                    </div>
+                    <div class="popup-body">
+                        <div class="mb-1"><span class="font-weight-bold">Jalur</span>: ${
+                            layer.feature.properties.jalur
+                        }</div>
+                        <div class="mb-1"><span class="font-weight-bold">Bagian Jalan</span>: ${
+                            layer.feature.properties.bagian_jalan
+                        }</div>
+                        <div class="mb-1"><span class="font-weight-bold">Lebar</span>: ${
+                            layer.feature.properties.lebar
+                        }</div>
+                        <div class="mb-1">
+                            <div class="font-weight-bold mb-1">Nilai IRI:</div> 
+                            <h3 class="text-center font-weight-bold border mb-0">${
+                                layer.feature.properties.nilai_iri
+                            }</h3>
+                        </div>
+                    </div>
+                </div>`;
+    });
+}
+
 // STANDAR IRI
 // IRI < 4: Baik
 // IRI 4-8: Sedang

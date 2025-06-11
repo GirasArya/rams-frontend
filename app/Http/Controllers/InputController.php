@@ -42,11 +42,7 @@ class InputController extends Controller
         }
     }
 
-    //render view revamp input aset
-    public function inputAsetTemp()
-    {
-        return view('input.aset_temp');
-    }
+
 
     public function aset(Request $request)
     {

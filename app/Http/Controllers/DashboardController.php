@@ -26,6 +26,7 @@ class DashboardController extends Controller
             'Authorization' => 'Bearer ' . $request->session()->get('token')
         ])->get($url_dashboard);
         $dashboard = $response_dashboard->json();
+        // dd($dashboard);
 
         return view('dashboard', compact('dashboard'));
     }

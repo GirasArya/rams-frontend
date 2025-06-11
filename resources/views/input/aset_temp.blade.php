@@ -21,8 +21,21 @@
     <section class="content">
         <div class="card">
             <div class="card-body px-3">
+                <!-- Alert -->
+                @foreach (['success', 'danger'] as $message)
+                    @if (session($message))
+                        <div class="alert alert-{{ $message }} alert-dismissible fade show" role="alert">
+                            {{ session($message) }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+                @endforeach
+
+
                 <form id="AssetRecordForm" action="{{ route('admin.asset.store') }}" method="POST"
-                    class="d-flex flex-column " style="gap:1rem;">
+                    class="d-flex flex-column " style="gap:1rem;" enctype="multipart/form-data">
                     @csrf
                     <div>
                         <h5>Ruas Jalan Tol</h5>
@@ -33,50 +46,26 @@
 
                     <div>
                         <h5>Jenis Aset</h5>
-                        <input name="jenis_aset" id="jenis_aset" required type="text" class="form-control"
-                            placeholder="Pilih satu" aria-describedby="basic-addon1">
-                    </div>
-
-                    <div class="w-100">
-                        <h5>Titik KM</h5>
-                        <select name="titik_km" id="titik_km" class="form-control">
-                            <option value=""></option>
+                        <select name="jenis_aset" class="form-control" id="jenis_aset">
+                            <option value="" selected disabled>Pilih satu</option>
+                            @foreach ($tipe_aset as $aset)
+                                <option value="{{ $aset['type'] }}">{{ $aset['text'] }}</option>
+                            @endforeach
                         </select>
-                        {{-- <input required type="text" class="form-control" placeholder="Pilih satu"
-                    aria-describedby="basic-addon1"> --}}
                     </div>
-
-                    {{-- <div class="d-flex justify-content-between" style="gap:1rem;">
-                    <div class="w-100">
-                        <h5>Titik KM Akhir</h5>
-                        <input required type="text" class="form-control" placeholder="Pilih satu"
-                            aria-describedby="basic-addon1">
-                    </div>
-                </div> --}}
-
-                    <div class="d-flex justify-content-between" style="gap:1rem;">
-                        <div class="w-100">
-                            <h5>Status Kondisi</h5>
-                            <input name="status" id="status" required type="text" class="form-control"
-                                placeholder="Pilih satu" aria-describedby="basic-addon1">
-                        </div>
-
-                        <div class="w-100">
-                            <h5>Masa hidup</h5>
-                            <input name="masa_hidup" id="masa_hidup" required type="text" class="form-control"
-                                placeholder="Dalam Tahun (Contoh : 1 Tahun)" aria-describedby="basic-addon1">
-                        </div>
-                    </div>
-
-                    {{-- <div>
-                        <h5>GeoJSON</h5>
-                        <input type="text" class="form-control" placeholder="Pilih satu" aria-describedby="basic-addon1">
-                    </div> --}}
 
                     <div>
                         <h5>Tanggal Pemasangan</h5>
-                        <input name="tanggal_pemasangan" id="tanggal_pemasangan" required type="date"
-                            class="form-control" placeholder="" aria-describedby="basic-addon1">
+                        <input type="date" class="form-control" name="tanggal_pemasangan" id="tanggal_pemasangan">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="d-block">File GeoJSON <span class="text-danger">*</span></label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="geojson" name="geojson"
+                                onchange="updateFileName()">
+                            <label class="custom-file-label" for="geojson">Choose file</label>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary" style="width: 10%; align-self:flex-end;">
@@ -88,13 +77,6 @@
     </section>
 
 
-    <script>
-        document.getElementById('ruas_jalan').addEventListener('change', async function() {
-            const nilaiIriDropdown = document.getElementById('ruas_jalan').value
-            console.log(nilaiIriDropdown)
-
-        });
-    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", async function() {
@@ -122,33 +104,11 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            const startKmSelect = $("#titik_km").empty().select({
-                allowClear: true,
-                width: "100%",
-            });
-
-            try {
-                const response = await fetch(
-                    `http://localhost:8080/api/get-km-iri-options/${null}`);
-                const data = await response.json();
-                const options = data.data;
-                const titiKKm = document.createDocumentFragment();
-
-                if (options.length === 0) {
-                    const noDataOption = new Option("No data", "", false, false);
-                    titiKKm.appendChild(noDataOption);
-                } else {
-                    options.forEach((option) => {
-                        const displayText = option.km;
-                        const newOption = new Option(displayText, option.km, false, false);
-                        titiKKm.appendChild(newOption);
-                    });
-                }
-                startKmSelect.append(titiKKm).trigger("change");
-            } catch (error) {
-                console.error("Error fetching bagian_jalan options:", error);
-            }
-        });
+        function updateFileName() {
+            var input = document.getElementById('geojson');
+            var label = input.nextElementSibling;
+            var fileName = input.files[0].name;
+            label.innerHTML = fileName;
+        }
     </script>
 @endsection

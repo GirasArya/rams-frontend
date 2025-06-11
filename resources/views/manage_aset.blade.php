@@ -17,11 +17,11 @@
         </div>
     </section>
 
-    <section class="content">
+    {{-- <section class="content">
         <div class="card">
             <div id="admin-map" data-route="{{ route('admin.leger.jalanUtama.generate') }}" style="height: 250px"></div>
         </div>
-    </section>
+    </section> --}}
 
     <section class="content">
         <div class="card mb-4">
@@ -29,47 +29,50 @@
             <div class="card-body">
                 <form id="filterAsset" class="d-flex justify-content-between">
                     <section class="pb-2 d-flex justify-content-around" style="gap: 2rem">
-                        <select aria-placeholder="Filter Jenis Aset" id="jenis_aset" class="form-select">
+                        {{-- <select aria-placeholder="Filter Jenis Aset" id="jenis_aset" class="form-select">
                             <option value="" disabled selected>Filter Jenis Aset</option>
-                            <option value="Patok KM">Patok KM</option>
-                            {{-- <option value=""></option> --}}
-                            {{-- <option value=""></option> --}}
-                        </select>
+                            @foreach ($tipe_aset as $aset)
+                                <option value="{{ $aset['type'] }}">{{ $aset['text'] }}</option>
+                            @endforeach
+                        </select> --}}
 
-                        <select aria-placeholder="Filter status" id="status" class="form-select">
+                        {{-- <select aria-placeholder="Filter status" id="status" class="form-select">
                             <option value="" disabled selected>Filter Status</option>
                             <option value="Baik">Baik</option>
                             <option value="Rusak Ringan">Rusak Ringan</option>
                             <option value="Rusak Berat">Rusak Berat</option>
-                        </select>
+                        </select> --}}
 
-                        <div id="Tanggal" class="input-group" style="width: fit-content">
+                        {{-- <div id="Tanggal" class="input-group" style="width: fit-content">
                             <input id="tanggal_pemasangan" placeholder="Tanggal Pemasangan" type="date"
                                 class="form-control" placeholder="Tanggal Pemasangan" aria-label="Tanggal Pemasangan"
                                 aria-describedby="basic-addon1">
-                        </div>
+                        </div> --}}
                     </section>
                     <section>
-                        <button type="submit" class="btn btn-primary">Terapkan Filter</button>
-                        <a href="{{ route('input.aset-temp') }}" class="btn btn-success">
-                            Tambah Aset
-                        </a>
+                        {{-- <button type="submit" class="btn btn-primary">Terapkan Filter</button> --}}
+                        {{-- <a href="{{ route('input.aset-temp') }}" class="btn btn-success"> --}}
+                            {{-- Tambah Aset --}}
+                        {{-- </a> --}}
                     </section>
                 </form>
 
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">Jenis Aset</th>
-                            <th scope="col">Lokasi</th>
-                            <th scope="col">Masa Hidup</th>
-                            <th scope="col">Status Kondisi</th>
-                            <th scope="col">Tanggal Pemasangan (dd/mm/yyyy)</th>
+                            <th class="text-center">Jenis Aset</th>
+                            <th class="text-center">Lokasi</th>
+                            <th class="text-center">Kondisi</th>
+                            <th class="text-center">Ruas Jalan</th>
+                            <th class="text-center">Tanggal Pemasangan (dd/mm/yyyy)</th>
                         </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
+
+                <div id="pagination" class="mt-3 d-flex justify-content-center w-fit"></div>
+
                 <section id="recordLoading" class="pt-4 d-flex align-items-center justify-content-center h-100">
                     <div class="spinner-grow" role="status">
                         <span class="visually-hidden">Loading...</span>
@@ -82,42 +85,138 @@
 
     @push('scripts')
         {{-- GET Data aset and render --}}
-        <script>
+        {{-- <script>
             document.addEventListener("DOMContentLoaded", async function() {
                 try {
-                    const response = await fetch(
-                        "http://localhost:8080/api/manage/aset");
+                    const response = await fetch("http://localhost:8080/api/manage/aset");
                     const data = await response.json();
                     const tbody = document.querySelector('.table tbody');
                     const loading = document.getElementById('recordLoading');
-                    if (data.length === 0) {
+
+                    if (data && data.length > 0) {
+                        loading.classList.add('d-none');
+                        data.forEach(item => {
+                            if (item.aset_jalan && Array.isArray(item.aset_jalan)) {
+                                item.aset_jalan.forEach(aset => {
+                                    const row = document.createElement('tr');
+                                    row.innerHTML = `
+                                        <td>${item.jenis_aset}</td>
+                                        <td>KM ${aset.km}</td>
+                                        <td>${new Date(item.tanggal_pemasangan).toLocaleDateString('id-ID')}</td> 
+                                    `;
+                                    tbody.appendChild(row);
+                                });
+                            }
+                        });
+                    } else {
                         loading.classList.add('d-none');
                         const noDataMessage = document.createElement('p');
                         noDataMessage.textContent = 'Belum ada data';
                         noDataMessage.classList.add('d-flex', 'justify-content-center');
                         tbody.appendChild(noDataMessage);
-                    } else {
-                        loading.classList.add('d-none');
-                        data.forEach(item => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                            <td>${item.jenis_aset}</td>
-                            <td>${item.titik_km}</td> 
-                            <td>${item.masa_hidup} Tahun</td>
-                            <td>${item.status}</td>
-                            <td>${new Date(item.tanggal_pemasangan).toLocaleDateString('id-ID')}</td> 
-                            <td>
-                                <button class="btn btn-sm btn-danger">Delete</button> 
-                            </td>
-                            `;
-                            tbody.appendChild(row);
-                        });
                     }
                 } catch (error) {
                     console.error("Error fetching aset data:", error);
                 }
             });
+        </script> --}}
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const tbody = document.querySelector('.table tbody');
+                const pagination = document.getElementById('pagination');
+                const loading = document.getElementById('recordLoading');
+                const itemsPerPage = 10;
+                let currentPage = 1;
+
+                async function fetchData(page = 1) {
+                    loading.classList.remove('d-none');
+                    tbody.innerHTML = '';
+                    pagination.innerHTML = '';
+
+                    try {
+                        const response = await fetch(
+                            `http://localhost:8080/api/manage/aset?page=${page}&per_page=${itemsPerPage}`);
+                        const result = await response.json();
+
+                        const data = result.data;
+                        const totalPages = result.last_page;
+
+                        if (data && data.length > 0) {
+                            renderTable(data);
+                            renderPagination(totalPages, result.current_page);
+                        } else {
+                            tbody.innerHTML = `<tr><td colspan="3" class="text-center">Belum ada data</td></tr>`;
+                        }
+                    } catch (error) {
+                        console.error("Error fetching data:", error);
+                        tbody.innerHTML =
+                            `<tr><td colspan="3" class="text-center text-danger">Gagal memuat data</td></tr>`;
+                    } finally {
+                        loading.classList.add('d-none');
+                    }
+                }
+
+                function renderTable(data) {
+                    tbody.innerHTML = '';
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="text-center">${item.tipe_aset}</td>
+                            <td class="text-center">${item.km != null ? item.km : '-'}</td>
+                            <td class="text-center">${item.status != null ? item.status : "-"}</td>
+                            <td class="text-center">${item.ruas_jalan != null ? item.ruas_jalan : "-"}</td>
+                            <td class="text-center">${new Date(item.tanggal_pemasangan).toLocaleDateString('id-ID')}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+
+                function renderPagination(totalPages, current) {
+                    pagination.innerHTML = '';
+                    const maxPages = 10;
+                    let startPage = Math.max(1, current - Math.floor(maxPages / 2));
+                    let endPage = Math.min(startPage + maxPages - 1, totalPages);
+                    if (endPage - startPage < maxPages - 1) {
+                        startPage = Math.max(1, endPage - maxPages + 1);
+                    }
+
+                    // Previous button
+                    if (current > 1) {
+                        const prev = createPageButton('«', current - 1);
+                        pagination.appendChild(prev);
+                    }
+
+                    // Numbered buttons
+                    for (let i = startPage; i <= endPage; i++) {
+                        const btn = createPageButton(i, i, i === current);
+                        pagination.appendChild(btn);
+                    }
+
+                    // Next button
+                    if (current < totalPages) {
+                        const next = createPageButton('»', current + 1);
+                        pagination.appendChild(next);
+                    }
+                }
+
+                function createPageButton(text, page, isActive = false) {
+                    const btn = document.createElement('button');
+                    btn.className = `btn btn-sm mx-1 ${isActive ? 'btn-primary' : 'btn-outline-primary'}`;
+                    btn.textContent = text;
+                    btn.onclick = () => {
+                        currentPage = page;
+                        fetchData(currentPage);
+                    };
+                    return btn;
+                }
+
+                // Load initial data
+                fetchData(currentPage);
+            });
         </script>
+
+
 
         <script>
             const filterAssetForm = document.getElementById('filterAsset');
@@ -129,26 +228,19 @@
                 event.preventDefault();
                 loading.classList.remove('d-none');
                 tbody.innerHTML = '';
-
                 const jenis_aset = document.getElementById('jenis_aset').value;
-                const statusOption = document.getElementById('status').value;
                 const tanggal_pemasangan = document.getElementById('tanggal_pemasangan').value;
 
                 const queryParams = new URLSearchParams();
                 if (jenis_aset) {
                     queryParams.append('jenis_aset', jenis_aset);
                 }
-                if (statusOption) {
-                    queryParams.append('status', statusOption);
-                }
+
                 if (tanggal_pemasangan) {
                     queryParams.append('tanggal_pemasangan', tanggal_pemasangan);
                 }
 
                 const url = `http://localhost:8080/api/manage/aset/filter?${queryParams.toString()}`;
-
-                console.log(tanggal_pemasangan);
-                console.log(url);
 
                 try {
                     const response = await fetch(url);
@@ -164,18 +256,17 @@
                         tbody.appendChild(noDataMessage);
                     } else {
                         data.forEach(item => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                        <td>${item.jenis_aset}</td>
-                        <td>${item.titik_km}</td> 
-                        <td>${item.masa_hidup} Tahun</td>
-                        <td>${item.status}</td>
-                        <td>${new Date(item.tanggal_pemasangan).toLocaleDateString('id-ID')}</td> 
-                        <td>
-                            <button class="btn btn-sm btn-danger deleteButton" data-id="${item.id}">Delete</button> 
-                        </td>
-                    `;
-                            tbody.appendChild(row);
+                            if (item.aset_jalan && Array.isArray(item.aset_jalan)) {
+                                item.aset_jalan.forEach(aset => {
+                                    const row = document.createElement('tr');
+                                    row.innerHTML = `
+                                        <td>${item.jenis_aset}</td>
+                                        <td>KM ${aset.km}</td>
+                                        <td>${new Date(item.tanggal_pemasangan).toLocaleDateString('id-ID')}</td> 
+                                    `;
+                                    tbody.appendChild(row);
+                                });
+                            }
                         });
                     }
                 } catch (error) {
@@ -262,22 +353,23 @@
                 //     legendKey: "lapisPondasiBawah"
                 // },
             ];
-            const overlayMapsConfig = [{
-                    name: "Jembatan",
-                    layer: "getJembatanPolygonLayer"
-                },
-                {
-                    name: "Lampu Lalu Lintas",
-                    layer: "getLampuLalulintasPointLayer"
-                },
-                {
-                    name: "Manhole",
-                    layer: "getManholePointLayer"
-                },
-                {
-                    name: "Gerbang",
-                    layer: "getGerbangPointLayer"
-                },
+            const overlayMapsConfig = [
+                // {
+                //     name: "Jembatan",
+                //     layer: "getJembatanPolygonLayer"
+                // },
+                // {
+                //     name: "Lampu Lalu Lintas",
+                //     layer: "getLampuLalulintasPointLayer"
+                // },
+                // {
+                //     name: "Manhole",
+                //     layer: "getManholePointLayer"
+                // },
+                // {
+                //     name: "Gerbang",
+                //     layer: "getGerbangPointLayer"
+                // },
                 {
                     name: "Patok HM",
                     layer: "getPatokHMPointLayer"
@@ -290,84 +382,84 @@
                     name: "Patok LJ",
                     layer: "getPatokLJPointLayer"
                 },
-                {
-                    name: "Patok RMJ",
-                    layer: "getPatokRMJPointLayer"
-                },
-                {
-                    name: "Patok ROW",
-                    layer: "getPatokROWPointLayer"
-                },
-                {
-                    name: "Patok Pemandu",
-                    layer: "getPatokPemanduPointLayer"
-                },
-                {
-                    name: "Reflektor",
-                    layer: "getReflektorPointLayer"
-                },
-                {
-                    name: "Rambu Lalu Lintas",
-                    layer: "getRambuLalulintasPointLayer"
-                },
+                // {
+                //     name: "Patok RMJ",
+                //     layer: "getPatokRMJPointLayer"
+                // },
+                // {
+                //     name: "Patok ROW",
+                //     layer: "getPatokROWPointLayer"
+                // },
+                // {
+                //     name: "Patok Pemandu",
+                //     layer: "getPatokPemanduPointLayer"
+                // },
+                // {
+                //     name: "Reflektor",
+                //     layer: "getReflektorPointLayer"
+                // },
+                // {
+                //     name: "Rambu Lalu Lintas",
+                //     layer: "getRambuLalulintasPointLayer"
+                // },
                 // { name: "Rambu Penunjuk Arah", layer: "getRambuPenunjukarahPointLayer" },
                 // { name: "Rumah Kabel", layer: "getRumahKabelPointLayer" },
-                {
-                    name: "STA Text",
-                    layer: "getStaTextPointLayer"
-                },
+                // {
+                //     name: "STA Text",
+                //     layer: "getStaTextPointLayer"
+                // },
                 // { name: "Tiang Listrik", layer: "getTiangListrikPointLayer" },
                 // { name: "Tiang Telepon", layer: "getTiangTeleponPointLayer" },
-                {
-                    name: "VMS",
-                    layer: "getVMSPointLayer"
-                },
+                // {
+                //     name: "VMS",
+                //     layer: "getVMSPointLayer"
+                // },
                 // { name: "Batas Desa", layer: "getBatasDesaLineLayer" },
-                {
-                    name: "Box Culvert",
-                    layer: "getBoxCulvertLineLayer"
-                },
-                {
-                    name: "Bangunan Penahan Tanah",
-                    layer: "getBPTLineLayer"
-                },
-                {
-                    name: "Bronjong",
-                    layer: "getBronjongLineLayer"
-                },
-                {
-                    name: "Concrete Barrier",
-                    layer: "getConcreteBarrierLineLayer"
-                },
-                {
-                    name: "Gorong Gorong",
-                    layer: "getGorongGorongLineLayer"
-                },
+                // {
+                //     name: "Box Culvert",
+                //     layer: "getBoxCulvertLineLayer"
+                // },
+                // {
+                //     name: "Bangunan Penahan Tanah",
+                //     layer: "getBPTLineLayer"
+                // },
+                // {
+                //     name: "Bronjong",
+                //     layer: "getBronjongLineLayer"
+                // },
+                // {
+                //     name: "Concrete Barrier",
+                //     layer: "getConcreteBarrierLineLayer"
+                // },
+                // {
+                //     name: "Gorong Gorong",
+                //     layer: "getGorongGorongLineLayer"
+                // },
                 // { name: "Guardrail", layer: "getGuardrailLineLayer" },
                 // { name: "Jalan", layer: "getJalanLineLayer" },
                 // { name: "Listrik Bawah Tanah", layer: "getListrikBawahtanahLineLayer" },
-                {
-                    name: "Marka",
-                    layer: "getMarkaLineLayer"
-                },
-                {
-                    name: "Pagar Operasional",
-                    layer: "getPagarOperasionalLineLayer"
-                },
-                {
-                    name: "Pita Kejut",
-                    layer: "getPitaKejutLineLayer"
-                },
-                {
-                    name: "Riol",
-                    layer: "getRiolLineLayer"
-                },
+                // {
+                //     name: "Marka",
+                //     layer: "getMarkaLineLayer"
+                // },
+                // {
+                //     name: "Pagar Operasional",
+                //     layer: "getPagarOperasionalLineLayer"
+                // },
+                // {
+                //     name: "Pita Kejut",
+                //     layer: "getPitaKejutLineLayer"
+                // },
+                // {
+                //     name: "Riol",
+                //     layer: "getRiolLineLayer"
+                // },
                 // { name: "Saluran", layer: "getSaluranLineLayer" },
                 // { name: "Sungai", layer: "getSungaiLineLayer" },
-                {
-                    name: "Telepon Bawah Tanah",
-                    layer: "getTeleponBawahtanahLineLayer"
-                },
+                // {
+                //     name: "Telepon Bawah Tanah",
+                //     layer: "getTeleponBawahtanahLineLayer"
+                // },
             ];
 
             // Dynamically create layer group objects
